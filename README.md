@@ -13,12 +13,13 @@ Curtain Call is an IoT project that allows you to control your curtains automati
 ---
 
 ## 🛠️ Hardware Requirements
-- **Microcontroller:** ESP8266 (NodeMCU) or ESP32
-- **Motor:** Stepper Motor (28BYJ-48 with ULN2003 driver)
+- **Microcontroller:** Arduino Uno R4 WiFi
+- **Motor:** 12V DC Motor
+- **Motor Driver:** L298N (or XY160D)
 - **Sensors:**
-  - LDR (Light Dependent Resistor)
+  - Photoresistor (LDR)
   - DHT11 (Temperature & Humidity)
-- **Power Supply:** 5V USB
+- **Power Supply:** 12V DC Adapter
 
 ## 💻 Software Requirements
 - **XAMPP** (Apache & MySQL)
@@ -56,7 +57,7 @@ Curtain Call is an IoT project that allows you to control your curtains automati
 ### 4. Hardware Setup (Arduino)
 1.  Open `arduino/curtain_call/curtain_call.ino` in Arduino IDE.
 2.  Install required libraries:
-    - `ESP8266WiFi` (or ESP32)
+    - `Arduino_UNOWiFi4` (or `WiFiS3`)
     - `ArduinoJson`
     - `DHT sensor library`
 3.  Update the **WiFi Credentials** and **Server IP** in the code:
@@ -65,13 +66,13 @@ Curtain Call is an IoT project that allows you to control your curtains automati
     const char* password = "YOUR_WIFI_PASSWORD";
     const char* server = "192.168.1.X"; // Your PC's Local IP Address
     ```
-4.  Upload the code to your ESP board.
+4.  Upload the code to your Arduino Uno R4 WiFi.
 
 ---
 
 ## 🎮 How to Run
 1.  Ensure XAMPP (Apache & MySQL) is running.
-2.  Power on your ESP device.
+2.  Power on your Arduino device.
 3.  Open the dashboard in your browser:
     [http://localhost/curtain_call/frontend/index.html](http://localhost/curtain_call/frontend/index.html)
 
