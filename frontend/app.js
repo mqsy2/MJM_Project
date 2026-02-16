@@ -102,42 +102,70 @@ async function sendAICommand() {
     btn.innerHTML = '<span class="spinner"></span> Thinking...';
     btn.disabled = true;
 
+    // Reset UI
+    const responseDiv = document.getElementById('ai-response');
+    const responseText = document.getElementById('ai-response-text');
+    const errorDiv = document.getElementById('ai-error');
+    const errorText = document.getElementById('ai-error-text');
+
+    responseDiv.classList.add('hidden');
+    errorDiv.classList.add('hidden');
+
     try {
         const res = await fetch(`${API_BASE}/ai_process.php`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_input: input })
         });
+
         const data = await res.json();
 
-        const responseDiv = document.getElementById('ai-response');
-        const responseText = document.getElementById('ai-response-text');
-
-        if (data.success) {
-            const decision = data.ai_decision;
-            responseDiv.classList.remove('hidden');
-            responseText.innerHTML = `
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="badge badge-ai">AI Decision</span>
-                    <span class="text-white font-semibold">${decision.action}</span>
-                    <span class="text-white/40">@ speed ${decision.speed}</span>
-                </div>
-                <p class="text-white/50 text-xs">${decision.reason}</p>
-            `;
-            updateCurtainStatusByPosition(decision.action === 'OPEN' ? 100 : 0);
-            document.getElementById('last-action-text').textContent =
-                `AI: ${decision.reason}`;
-            refreshLogs();
-        } else {
-            responseDiv.classList.remove('hidden');
-            responseText.innerHTML = `<span class="text-accent-rose">${data.error || 'AI request failed'}</span>`;
+        if (!res.ok) {
+            const errData = await res.json().catch(() => null);
+            if (res.status === 429 || (errData?.error?.code === 429)) {
+                throw new Error("AI is busy (Rate Limit). Please wait 1 minute.");
+            }
+            throw new Error(errData?.error || `Server error (${res.status})`);
         }
+
+        if (!data.success) {
+            throw new Error(data.error || 'AI request failed');
+        }
+
+        const decision = data.ai_response;
+        if (!decision || typeof decision.position === 'undefined') {
+            throw new Error("Invalid response from AI");
+        }
+
+        const pos = decision.position;
+
+        // Move the slider to AI's chosen position
+        document.getElementById('position-slider').value = pos;
+        document.getElementById('position-value').textContent = pos + '%';
+        updateCurtainStatusByPosition(pos);
+
+        // Send the position command to the motor
+        sendPosition(pos);
+
+        // Show Success
+        responseDiv.classList.remove('hidden');
+        responseText.innerHTML = `
+            <div class="flex items-center gap-2 mb-2">
+                <span class="badge badge-ai">AI Decision</span>
+                <span class="text-white font-semibold">${pos}%</span>
+            </div>
+            <p class="text-white/50 text-xs">${decision.reason}</p>
+        `;
+        document.getElementById('last-action-text').textContent =
+            `AI: ${decision.reason}`;
+        refreshLogs();
+
     } catch (err) {
         console.error('AI error:', err);
-        const responseDiv = document.getElementById('ai-response');
-        const responseText = document.getElementById('ai-response-text');
-        responseDiv.classList.remove('hidden');
-        responseText.innerHTML = `<span class="text-accent-rose">Connection error. Is XAMPP running?</span>`;
+        // Show Error Widget
+        errorDiv.classList.remove('hidden');
+        errorText.textContent = err.message || 'Connection error. Is XAMPP running?';
+        lucide.createIcons();
     } finally {
         btn.innerHTML = originalHTML;
         btn.disabled = false;

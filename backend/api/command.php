@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Cancel any old pending commands — only the latest matters
     $conn->query("UPDATE command_queue SET status = 'EXECUTED', executed_at = NOW() WHERE status = 'PENDING'");
 
-    $stmt = $conn->prepare("INSERT INTO command_queue (action, speed, source, reason) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("siss", $action, $speed, $source, $reason);
+    $stmt = $conn->prepare("INSERT INTO command_queue (action, position, speed, source, reason) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("siiss", $action, $targetPosition, $speed, $source, $reason);
 
     if ($stmt->execute()) {
         $movingStatus = ($action === 'STOP') ? 'STOPPED' : 'MOVING';
@@ -47,9 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // Arduino polls for the next pending command
-    $result = $conn->query("SELECT * FROM command_queue WHERE status = 'PENDING' ORDER BY created_at DESC LIMIT 1");
+    $result = $conn->query("SELECT * FROM command_queue WHERE status = 'PENDING' ORDER BY id DESC LIMIT 1");
 
-    if ($result->num_rows > 0) {
+    if ($result && $result->num_rows > 0) {
         $command = $result->fetch_assoc();
 
         // Mark as executed
@@ -57,11 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $command['id']);
         $stmt->execute();
 
-        // Extract target_position from reason
-        $targetPosition = -1;
-        if (preg_match('/(\d+)%/', $command['reason'], $matches)) {
-            $targetPosition = intval($matches[1]);
-        }
+        // Use the explicit position column
+        $targetPosition = isset($command['position']) ? intval($command['position']) : -1;
 
         // Update curtain status
         $newStatus = $command['action'];

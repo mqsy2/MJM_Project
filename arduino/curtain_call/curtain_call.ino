@@ -38,13 +38,13 @@
 // ==========================================
 // 🌐 WIFI CONFIGURATION — Fill in yours!
 // ==========================================
-const char* WIFI_SSID     = "benboy";
-const char* WIFI_PASSWORD = "Masuraki709#";
+const char* WIFI_SSID     = "wIFI_SSID";
+const char* WIFI_PASSWORD = "WIFI_PASSWORD";
 
 // ==========================================
 // 🖥️ SERVER CONFIGURATION
 // ==========================================
-const char* SERVER_HOST = "192.168.1.2";  // Your PC's local IP (run ipconfig to find it)
+const char* SERVER_HOST = "YOUR_PC_IP";  // Your PC's local IP (run ipconfig to find it)
 const int   SERVER_PORT = 80;
 const char* API_SENSOR  = "/curtain_call/api/sensor_data.php";
 const char* API_COMMAND = "/curtain_call/api/command.php";
