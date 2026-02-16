@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curtain Call — Smart Curtain Dashboard</title>
+    <meta name="description" content="AI-powered automatic curtain control system dashboard">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' },
+                        surface: { 800: '#1e1b2e', 850: '#181525', 900: '#12101f' },
+                        accent: { warm: '#f59e0b', cool: '#06b6d4', rose: '#f43f5e', emerald: '#10b981' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark bg-surface-900 text-white font-['Inter'] min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-surface-900/80 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-cool flex items-center justify-center">
+                    <i data-lucide="blinds" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+                        Curtain Call</h1>
+                    <p class="text-xs text-white/40">Smart Curtain System</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="connection-status"
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
+                    <div class="w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></div>
+                    <span class="text-xs text-white/60">Connected</span>
+                </div>
+                <button onclick="toggleSettings()"
+                    class="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/10">
+                    <i data-lucide="settings" class="w-5 h-5 text-white/60"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
+        <!-- Curtain Status Hero -->
+        <section id="curtain-hero"
+            class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-surface-800 to-surface-850 border border-white/5 p-8">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-cool/5"></div>
+            <div class="relative flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1">
+                    <p class="text-sm text-white/40 mb-2 uppercase tracking-wider font-medium">Curtain Status</p>
+                    <h2 id="curtain-status-text"
+                        class="text-5xl font-800 mb-3 bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+                        UNKNOWN</h2>
+                    <p id="last-action-text" class="text-white/40 text-sm">Waiting for data...</p>
+                </div>
+
+                <!-- Curtain Animation -->
+                <div class="curtain-visual">
+                    <div class="curtain-rod"></div>
+                    <div class="curtain-panel left" id="curtain-left"></div>
+                    <div class="curtain-panel right" id="curtain-right"></div>
+                    <div class="curtain-window"></div>
+                </div>
+
+            </div>
+
+
+
+            <!-- Position Slider -->
+            <div class="relative mt-4 pt-4 border-t border-white/5">
+                <div class="flex items-center justify-between mb-3">
+                    <label class="text-sm text-white/50 font-medium">Curtain Position</label>
+                    <span id="position-value" class="text-sm text-accent-cool font-semibold">100%</span>
+                </div>
+                <input type="range" id="position-slider" min="0" max="100" value="100" class="speed-slider w-full">
+                <div class="flex justify-between mt-1">
+                    <span class="text-xs text-white/20">Closed</span>
+                    <span class="text-xs text-white/20">Fully Open</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sensor Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Temperature -->
+            <div class="sensor-card group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-accent-rose/10 flex items-center justify-center group-hover:bg-accent-rose/20 transition-colors">
+                        <i data-lucide="thermometer" class="w-5 h-5 text-accent-rose"></i>
+                    </div>
+                    <span class="text-xs text-white/30 uppercase tracking-wider">Temperature</span>
+                </div>
+                <p id="sensor-temp" class="text-4xl font-bold text-white mb-1">--</p>
+                <p class="text-sm text-white/30">°C</p>
+            </div>
+
+            <!-- Humidity -->
+            <div class="sensor-card group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+                        <i data-lucide="droplets" class="w-5 h-5 text-primary-400"></i>
+                    </div>
+                    <span class="text-xs text-white/30 uppercase tracking-wider">Humidity</span>
+                </div>
+                <p id="sensor-humidity" class="text-4xl font-bold text-white mb-1">--</p>
+                <p class="text-sm text-white/30">%</p>
+            </div>
+
+            <!-- Light Level -->
+            <div class="sensor-card group">
+                <div class="flex items-center justify-between mb-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-accent-warm/10 flex items-center justify-center group-hover:bg-accent-warm/20 transition-colors">
+                        <i data-lucide="sun" class="w-5 h-5 text-accent-warm"></i>
+                    </div>
+                    <span class="text-xs text-white/30 uppercase tracking-wider">Light Level</span>
+                </div>
+                <p id="sensor-light" class="text-4xl font-bold text-white mb-1">--</p>
+                <p class="text-sm text-white/30">/ 1023</p>
+            </div>
+        </section>
+
+        <!-- AI Command + Activity Log -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+            <!-- AI Command Panel -->
+            <div class="rounded-2xl bg-gradient-to-br from-surface-800 to-surface-850 border border-white/5 p-6">
+                <div class="flex items-center gap-3 mb-5">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                        <i data-lucide="brain" class="w-4 h-4 text-purple-400"></i>
+                    </div>
+                    <h3 class="font-semibold text-white/90">AI Command</h3>
+                </div>
+                <p class="text-xs text-white/30 mb-4">Tell the AI what you want in natural language. It will read your
+                    sensors and decide the best action.</p>
+                <div class="space-y-3">
+                    <textarea id="ai-input" rows="3"
+                        placeholder='Try: "The sun is glaring on my screen" or "It feels hot in here"'
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20 resize-none transition-all"></textarea>
+                    <button onclick="sendAICommand()" id="btn-ai-send"
+                        class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span>Ask AI</span>
+                    </button>
+                </div>
+                <!-- AI Response -->
+                <div id="ai-response" class="hidden mt-4 p-4 rounded-xl bg-white/5 border border-white/10">
+                    <p class="text-xs text-white/40 mb-2 uppercase tracking-wider">AI Response</p>
+                    <p id="ai-response-text" class="text-sm text-white/80"></p>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="rounded-2xl bg-gradient-to-br from-surface-800 to-surface-850 border border-white/5 p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-accent-cool/10 flex items-center justify-center">
+                            <i data-lucide="scroll-text" class="w-4 h-4 text-accent-cool"></i>
+                        </div>
+                        <h3 class="font-semibold text-white/90">Activity Log</h3>
+                    </div>
+                    <button onclick="refreshLogs()"
+                        class="text-xs text-white/30 hover:text-white/60 transition-colors flex items-center gap-1">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Refresh
+                    </button>
+                </div>
+                <div id="activity-log" class="space-y-2 max-h-72 overflow-y-auto custom-scroll">
+                    <div class="text-sm text-white/30 text-center py-8">No activity yet</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Settings Panel (hidden by default) -->
+        <section id="settings-panel"
+            class="hidden rounded-2xl bg-gradient-to-br from-surface-800 to-surface-850 border border-white/5 p-6">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-white/60"></i>
+                </div>
+                <h3 class="font-semibold text-white/90">Settings</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Auto Mode Toggle -->
+                <div class="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div>
+                        <p class="text-sm font-medium text-white/80">Auto Mode</p>
+                        <p class="text-xs text-white/30">Automatically control based on sensors</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="setting-auto-mode"
+                            onchange="updateSetting('auto_mode', this.checked ? '1' : '0')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <!-- Light Threshold High -->
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm font-medium text-white/80">Light Threshold (High)</p>
+                        <span id="setting-light-high-val" class="text-sm text-accent-warm font-semibold">800</span>
+                    </div>
+                    <input type="range" id="setting-light-high" min="0" max="1023" value="800"
+                        onchange="updateSetting('light_threshold_high', this.value)" class="speed-slider w-full">
+                </div>
+                <!-- Light Threshold Low -->
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm font-medium text-white/80">Light Threshold (Low)</p>
+                        <span id="setting-light-low-val" class="text-sm text-primary-400 font-semibold">200</span>
+                    </div>
+                    <input type="range" id="setting-light-low" min="0" max="1023" value="200"
+                        onchange="updateSetting('light_threshold_low', this.value)" class="speed-slider w-full">
+                </div>
+                <!-- Temp Threshold -->
+                <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm font-medium text-white/80">Temp Threshold (°C)</p>
+                        <span id="setting-temp-high-val" class="text-sm text-accent-rose font-semibold">35</span>
+                    </div>
+                    <input type="range" id="setting-temp-high" min="20" max="50" value="35"
+                        onchange="updateSetting('temp_threshold_high', this.value)" class="speed-slider w-full">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 mt-12">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+            <p class="text-xs text-white/20">Curtain Call © 2026 — Team MJM</p>
+            <p class="text-xs text-white/20">PEMBEDS Final Project</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

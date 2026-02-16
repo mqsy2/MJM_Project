@@ -1,0 +1,115 @@
+📝 Final Project Proposal: Embedded 
+Systems 
+Deadline: Tuesday, Feb 10 
+Format: PDF or Printed Copy 
+Instructor Approval: Required before starting. 
+1. Team Information 
+Group Name: MJM 
+Theme: Smart Home 
+Member Name 
+Role (Hardware / Backend / Frontend / AI) 
+1. Moises James Q. Sy 
+Hardware, Backend, AI 
+2. John Michael Corpuz 
+Hardware, Frontend 
+3. 
+ 
+4. 
+ 
+2. Project Overview 
+Project Title: 
+“Curtain Call: The Automatic Curtain Opener” 
+The Elevator Pitch (3-4 Sentences): 
+“Curtain Call” is an automated curtain opening and closing device that allows you to simply 
+open, close and adjust curtains for your windows with a button or prompt in your phone or 
+even just let the AI do it for you.  
+Problem Statement: 
+The problem that we would be solving is the manual opening and closing of curtains for 
+windows, if a home has a large number of windows in their house, it’d be more convenient for 
+them to simply just press a button and close/open all of their window curtains at once or 
+automatically.  
+3. Technical Stack 
+A. Hardware (The Embedded Side) 
+● Microcontroller: Arduino Uno R4 WiFi 
+● Inputs (Sensors): 
+○ DHT11 
+○ photoresistor 
+○ XY160D motor driver module 
+● Outputs (Actuators): 
+○ 12v DC Motor with a curtain 
+● Power Source: 
+○ 12v DC adapter 
+○ 12v female connector 
+B. Software (The Web Side) 
+● Frontend: Tailwind CSS / HTML / JavaScript 
+● Backend: PHP 
+● Database: MySQL 
+● Hosting: Localhost (XAMPP/WAMP) 
+C. Artificial Intelligence (The Brain) 
+● AI Model: Google Gemini 1.5 Flash (via API) 
+● AI Task: (Check one) 
+○ [/ ] Generative: Converting text to hardware commands (Natural Language 
+Processing). 
+○ [ ] Classification: Deciding if data is "Good" or "Bad" (Sentiment Analysis). 
+○ [ ] Summarization: Reading logs and explaining what happened. 
+○ [ ] Expert System: Providing specific advice based on sensor data. 
+● Sample Prompt: 
+(Write the actual prompt you will send to the AI. Example: "Analyze this text: 
+'$user_input'. Return a JSON object with 'color_hex' and 'motor_speed' based on the 
+emotion.") 
+ 
+4. System Logic (The Flow) 
+(Explain step-by-step what happens when the user interacts with the system.) 
+1. Input: User types "The sun is glaring on my screen" into the dashboard OR Sensor reads 
+"Light Level: 950 (Direct Sunlight)". 
+2. Processing: PHP combines this text and sensor data into a prompt and sends it to the 
+Google Gemini API. 
+3. AI Decision: The AI replies with a JSON command to CLOSE the curtains at full speed 
+(255) to reduce the detected glare and heat. 
+4. Storage: PHP saves this decision (Status: CLOSE, Speed: 255) to the MySQL table 
+device_logs (or command_queue). 
+5. Actuation: Arduino reads the database via WiFi and turns on the 12V DC Motor via the 
+XY-160D driver to physically move the curtain. 
+ 
+5. Bill of Materials (Budget) 
+Component 
+Quantity 
+Status (Have it / Need to 
+buy) 
+Arduino R4 WiFi 
+1 
+Have 
+Breadboard 
+1 
+Have 
+DHT11 
+1 
+Have 
+XY160D motor driver 
+module 
+1 
+Need to buy 
+12v DC adapter 
+1 
+Need to buy 
+12v DC Motor 
+1 
+Need to buy 
+Curtain 
+1 
+Need to buy 
+12v female connector 
+1 
+Need to buy 
+6. Timeline (Milestones) 
+● Feb 10: Proposal Submission. 
+● Feb 13: Web Dashboard & Database Setup. 
+● Feb 16-17: Hardware Circuit Building & Testing (Wiring). 
+● Feb 16-17: AI API Integration (PHP script working). 
+● Feb 16-17: Full System Integration (Arduino talking to Database). 
+● Finals Week: Final Presentation & Demo. 
+7. Instructor Feedback (Leave Blank) 
+● Approved: [ ] Yes / [ ] No 
+● Notes: __________________________________________________________________ 
+replaced XY160D with L298N motor drive controller
+Added a photoresistor as I forgot to put it in the document
