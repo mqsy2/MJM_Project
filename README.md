@@ -71,10 +71,13 @@ Curtain Call is an IoT project that allows you to control your curtains automati
 ---
 
 ## 🎮 How to Run
-1.  Ensure XAMPP (Apache & MySQL) is running.
-2.  Power on your Arduino device.
-3.  Open the dashboard in your browser:
-    [http://localhost/curtain_call/frontend/index.html](http://localhost/curtain_call/frontend/index.html)
+1.  **Start Database**: Open XAMPP Control Panel and start **MySQL** (Apache is optional).
+2.  **Power Up**: Turn on your Arduino device.
+3.  **Launch App**: Open a terminal in the project folder and run:
+    ```bash
+    npm start
+    ```
+    This will start a local server and automatically open the dashboard in your browser!
 
 ### Voice/AI Commands to Try:
 - *"Open curtains to 50%"*

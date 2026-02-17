@@ -2,7 +2,7 @@
 // Curtain Call — Dashboard JavaScript
 // ============================================
 
-const API_BASE = 'http://localhost/curtain_call/api';
+const API_BASE = '../backend/api';
 let pollingInterval = null;
 
 // ---- Initialize ----
