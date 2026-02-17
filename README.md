@@ -78,6 +78,18 @@ Curtain Call is an IoT project that allows you to control your curtains automati
     npm start
     ```
     This will start a local server and automatically open the dashboard in your browser!
+    
+    > **Dashboard Link:** [http://localhost:3000/frontend/index.html](http://localhost:3000/frontend/index.html)
+
+## 📱 Mobile Control (Phone Access)
+To control the curtains from your phone:
+1.  Connect your phone to the **same Wi-Fi** as this PC.
+2.  Find this PC's **IP Address**:
+    - Open a terminal and type: `ipconfig`
+    - Look for "IPv4 Address" (e.g., `192.168.1.15`).
+3.  Open your phone's browser and type:
+    `http://YOUR_PC_IP:3000/frontend/index.html`
+    *(Example: http://192.168.1.15:3000/frontend/index.html)*
 
 ### Voice/AI Commands to Try:
 - *"Open curtains to 50%"*

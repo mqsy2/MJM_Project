@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Smart Curtain System Dashboard",
   "scripts": {
-    "start": "start http://localhost:3000/frontend/index.html && \"C:\\xampp\\php\\php.exe\" -S localhost:3000"
+    "start": "start http://localhost:3000/frontend/index.html && \"C:\\xampp\\php\\php.exe\" -S 0.0.0.0:3000 -t ."
   },
   "author": "MJM Team",
   "license": "ISC"
